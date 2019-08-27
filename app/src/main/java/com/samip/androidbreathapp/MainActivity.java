@@ -1,18 +1,21 @@
 package com.samip.androidbreathapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.SystemClock;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.github.florent37.viewanimator.AnimationListener;
 import com.github.florent37.viewanimator.ViewAnimator;
 import com.samip.androidbreathapp.util.Prefs;
+
+import java.text.MessageFormat;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,6 +45,11 @@ public class MainActivity extends AppCompatActivity {
         prefs = new Prefs(this);
 
         startIntroAnimation();
+
+        // setting all the data into field
+        breathTakenTxt.setText(MessageFormat.format("{0} Breaths", prefs.getBreaths()));
+        todayBreathTakenTxt.setText(MessageFormat.format("{0} Min Today",prefs.getSessions()));
+        lastBreathTakenTxt.setText(prefs.getDate());
 
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                 .thenAnimate(imageView)
                 .scale(0.02f,1.5f,0.02f)
                 .rotation(360)
-                .repeatCount(4)
+                .repeatCount(7) // which will take approximately 1 minutes
                 .accelerate()
                 .duration(5000)
                 .onStop(new AnimationListener.Stop() {
@@ -94,7 +102,24 @@ public class MainActivity extends AppCompatActivity {
                         // saved all the data
                         prefs.setSessions(prefs.getSessions() + 1);
                         prefs.setBreaths(prefs.getBreaths() + 1);
-                        prefs.setDate(SystemClock.currentThreadTimeMillis() );
+                        prefs.setDate(System.currentTimeMillis());
+
+                        // refresh activity
+                        new CountDownTimer(2000,1000){
+
+                            @Override
+                            public void onTick(long millisUntilFinished) {
+                                // can put code to show ticking...1,2,3..
+                                // ticks 2 times because of 2000 after 1 sec
+                                Log.d(TAG, "onTick: ");
+                            }
+
+                            @Override
+                            public void onFinish() {
+                                startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                                finish();
+                            }
+                        }.start();
                     }
                 })
                 .start();
