@@ -41,7 +41,7 @@ public class Prefs {
         calendar.setTimeInMillis(milliDate);
 
         String amOrpm = calendar.get(Calendar.AM_PM) == Calendar.AM ? "AM" : "PM";
-        String time = calendar.get(Calendar.HOUR_OF_DAY)+":"+calendar.get(Calendar.MINUTE)+" "+amOrpm;
+        String time = "Last "+calendar.get(Calendar.HOUR_OF_DAY)+":"+calendar.get(Calendar.MINUTE)+" "+amOrpm;
 
         return time;
     }
